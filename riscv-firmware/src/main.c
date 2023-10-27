@@ -35,6 +35,7 @@ int main() {
                     if(x_pos & 0x3F){
                         x_pos--;
                     }
+                    // printf("xxx");
                 }
                 if(controller_status & 0x2){
                     if(x_pos >= 0x40){
