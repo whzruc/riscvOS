@@ -1,30 +1,4 @@
-- Launch the application program when cartridge is entered
-  
-  - cartridge是什么，要怎么实现
-  
-  - 
 
-- Read input from the controller
-  
-  - 读取键盘控制 可以参考样例
-
-- A periodic timer  :heavy_check_mark:
-
-- Draw something in graphics mode
-  
-  - 研究显存模式
-  
-  - 编写例子
-
-- Respond to command and video interrupts
-  
-  - 编写中断程序
-
-- 修改文档
-
-cartridge和firmware应该是两份代码
-
-cartidge是一种即插即用的设备，再按下button就退出了
 
 ## 程序结构分析
 
@@ -55,17 +29,101 @@ cartidge是一种即插即用的设备，再按下button就退出了
     - 增加全局计数器gloabl
     
     - 读取控制器状态并将其保存在controller_status中
-  
-  - 需要实现更多的系统调用
 
 
 
-
+## 任务拆解
 
 ### 时钟中断
 
 判断中断是否为时钟中断
 
 确认为时钟中断，调用中断处理程序
+
+
+
+:heavy_check_mark:
+
+## cartridge
+
+
+
+期望的结果是插入cartridge之后 可以使用图形模式绘制一个图像
+
+
+
+
+
+
+
+
+
+## Draw something in graphics mode
+
+text模式
+
+512*288 长64个 宽36
+
+Text Data 每位存一个字符 
+
+Text Color 
+
+高4位存背景颜色低4位存字体颜色
+
+和data一样，使用一个字节表示颜色
+
+| Bit         | 7..4     | 3..0     |
+| ----------- | -------- | -------- |
+| Description | BG Color | FG Color |
+
+Text Palette
+
+调色板 
+
+2*16\*4B=0x80 128B
+
+应该是对于颜色的全局定义
+
+
+
+Graphics Mode
+
+与第一版不同主要是在背景图
+
+一个512*288的图像可以由 576(32\*18) 16*16的子图代替
+
+先不考虑子图模式
+
+XY 表示图像的左上位置 Z表示 图层直接设置为0即可
+
+(想全屏显示X应该是512 Y应该是288)
+
+
+
+先生成背景图 然后更改Mode control 的mode位即可 其他保持不变
+
+
+
+
+
+
+
+
+
+
+
+## video 和command 中断
+
+
+
+
+
+
+
+### Read input from the controller
+
+一开始的代码是没有键盘中断的，只是每次触发时钟中断时，将检测的键盘输入赋值
+
+所以还需要实现键盘中断 需要实现关于键盘输入的系统调用
 
 

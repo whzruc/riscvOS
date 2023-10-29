@@ -1,5 +1,4 @@
-#pragma once
-#include "include/clock.h"
+#include "include/timer.h"
 
 
 
@@ -11,6 +10,7 @@ unsigned int x=0;
 
 unsigned time_count=0;
 
+uint32_t video_flag=1;
 #define TICK_NUM 1
 #define MTIME_LOW       (*((volatile uint32_t *)0x40000008))
 #define MTIME_HIGH      (*((volatile uint32_t *)0x4000000C))
@@ -39,11 +39,14 @@ void set_timer(uint64_t timestamp){
 
 }
 
-void handle_time_interrput(){
+void handle_time_interrupt(){
 
     set_timer(1000);
     if((++time_count%TICK_NUM)==0){
+        if(video_flag){
         VIDEO_MEMORY[x]='A';
         x++;
+        }
     }
 }
+

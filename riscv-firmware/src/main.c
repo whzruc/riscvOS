@@ -1,9 +1,14 @@
 #include <stdint.h>
+#include "include/timer.h"
 
 volatile int global = 42;
 volatile uint32_t controller_status = 0;
 
+volatile uint32_t *CARTRIDGE=(volatile uint32_t *)(0x4000001C);
 volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
+volatile uint8_t *TEXT_COLOR=(volatile uint8_t *)(0x50000000+0xF5100);
+typedef void (*FunPtr)(void);
+
 int main() {
     int a = 4;
     int b = 12;
@@ -25,8 +30,24 @@ int main() {
     VIDEO_MEMORY[12] = 'T';
     VIDEO_MEMORY[13] = 'X';
 
+    TEXT_COLOR[0]=0x0F;
+    TEXT_COLOR[1]=0x0E;
+    TEXT_COLOR[2]=0x0D;
+    TEXT_COLOR[3]=0x0C;
+    TEXT_COLOR[4]=0x0B;
+    TEXT_COLOR[5]=0x0A;
+    TEXT_COLOR[6]=0x09;
+    VIDEO_MEMORY[289]='K';
+    TEXT_COLOR[289]=0x08;
+
+    VIDEO_MEMORY[2303]='E';
+    TEXT_COLOR[2303]='9';
+
+
+
 
     while (1) {
+
         int c = a + b + global;
         if(global != last_global){
             if(controller_status){
@@ -35,7 +56,6 @@ int main() {
                     if(x_pos & 0x3F){
                         x_pos--;
                     }
-                    // printf("xxx");
                 }
                 if(controller_status & 0x2){
                     if(x_pos >= 0x40){
@@ -51,6 +71,23 @@ int main() {
                     if((x_pos & 0x3F) != 0x3F){
                         x_pos++;
                     }
+                }
+                // press u to clear the display
+                if(controller_status &0x10){
+                    for(int i=0;i<64*36;i++){
+                        VIDEO_MEMORY[i]=0;
+                    }                  
+                }
+                // cartridgae 
+                if((*CARTRIDGE)&0x1){
+                    for(int i=0;i<64*36;i++){
+                        VIDEO_MEMORY[i]=0;
+                    }
+                    ((FunPtr)((*CARTRIDGE)&0xFFFFFFFC))();
+                }
+                //command interrupt stop the timer
+                if(controller_status){
+
                 }
                 VIDEO_MEMORY[x_pos] = 'X';
             }

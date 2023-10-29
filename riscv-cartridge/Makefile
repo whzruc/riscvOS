@@ -19,7 +19,7 @@ DEBUG_MODE=TRUE
 ifdef DEBUG_MODE
 DEFINES  += -DDEBUG
 CFLAGS   += -O0 -g -ggdb
-# LDFLAGS  += -Wl,-no_pie
+#LDFLAGS  += -Wl,-no_pie
 else 
 CFLAGS   += -O3
 endif
@@ -27,17 +27,14 @@ endif
 LDFILE   = riscv32-console.ld
 INCLUDE  += -I $(INC_DIR)
 CFLAGS   += -ffreestanding  -nostartfiles -nostdlib -nodefaultlibs
-LDFLAGS  += -lc -lnosys -lstdc++
+LDFLAGS  += -lc
 LDFLAGS  += -Wl,--gc-sections -Wl,-T,$(LDFILE)
 
-TARGET_NAME = riscv-console-firmware
+TARGET_NAME = riscv-cartridge
 
 TARGET_OBJS =   $(OBJ_DIR)/main.o               \
                 $(OBJ_DIR)/crt0.o               \
-                $(OBJ_DIR)/interrupt.o          \
-                $(OBJ_DIR)/startup.o  			\
-				$(OBJ_DIR)/timer.o 				
-				
+                $(OBJ_DIR)/startup.o
 
 all: directories $(BIN_DIR)/$(TARGET_NAME)
 

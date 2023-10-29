@@ -7,3 +7,6 @@ void set_timer(uint64_t msec);
 
 
 void handle_time_interrupt();
+
+
+extern uint32_t video_flag;
