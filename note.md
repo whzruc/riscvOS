@@ -42,7 +42,7 @@
 
 
 
-:heavy_check_mark:
+:exclamation:
 
 ## cartridge
 
@@ -50,7 +50,7 @@
 
 期望的结果是插入cartridge之后 可以使用图形模式绘制一个图像
 
-
+:heavy_check_mark:
 
 
 
@@ -102,7 +102,7 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 先生成背景图 然后更改Mode control 的mode位即可 其他保持不变
 
-
+:exclamation:
 
 
 
@@ -127,3 +127,5 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 所以还需要实现键盘中断 需要实现关于键盘输入的系统调用
 
 
+
+:exclamation:
