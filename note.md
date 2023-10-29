@@ -40,9 +40,7 @@
 
 确认为时钟中断，调用中断处理程序
 
-
-
-:exclamation:
+:heavy_check_mark:
 
 ## cartridge
 
@@ -50,11 +48,11 @@
 
 期望的结果是插入cartridge之后 可以使用图形模式绘制一个图像
 
-:heavy_check_mark:
+因为期望的系统调用在cartridge中，所以需要先实现这个
 
 
 
-
+:exclamation:
 
 
 
@@ -114,7 +112,11 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 ## video 和command 中断
 
+也清楚怎么弄了
 
+例子是在cart中用了，在这个作业里面在firmware中使用 初始化图形界面时video中断，开始接收键盘中断控制光标移动，按下cmd后触发cmd中断，切换显示模式
+
+:exclamation:
 
 
 
@@ -126,6 +128,10 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 所以还需要实现键盘中断 需要实现关于键盘输入的系统调用
 
+需要判断mcause的值是不是11[原因](https://web.cecs.pdx.edu/~harry/riscv/RISCV-Summary.pdf)
+
 
 
 :exclamation:
+
+

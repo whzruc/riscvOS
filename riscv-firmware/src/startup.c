@@ -67,22 +67,28 @@ extern volatile int global;
 extern volatile uint32_t controller_status;
 
 void  c_interrupt_handler(int mcause,int mepc){
-    // switch(mcause){
-    //     case  MACHINE_TIMER:{
-    //         global++;
-    //         handle_time_interrupt();
-    //         // handle_time_interrupt();
-    //     }
-    //     break;
-        
-    //     controller_status = CONTROLLER;
-        
-    // }
-    if(mcause==MACHINE_TIMER){
+    switch(mcause){
+        case  MACHINE_TIMER:{
             global++;
             handle_time_interrupt();
-    }else{
+        }
+        break;
+        
         controller_status = CONTROLLER;
+        
     }
+
 }
 
+
+uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
+    uint32_t ret=0xffffffff;
+
+    if(call == 0){
+        ret=global;
+    }else if(call ==1){
+        ret=CONTROLLER;
+    }
+
+    return ret;
+}
