@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "include/timer.h"
+#include "include/kernel.h"
 
 
 extern uint8_t _erodata[];
@@ -33,14 +34,15 @@ __attribute__((always_inline)) inline void csr_disable_interrupts(void){
     asm volatile ("csrci mstatus, 0x8");
 }
 
-#define MTIME_LOW       (*((volatile uint32_t *)0x40000008))
-#define MTIME_HIGH      (*((volatile uint32_t *)0x4000000C))
-#define MTIMECMP_LOW    (*((volatile uint32_t *)0x40000010))
-#define MTIMECMP_HIGH   (*((volatile uint32_t *)0x40000014))
-#define CONTROLLER      (*((volatile uint32_t *)0x40000018))
+extern volatile int global;
+extern volatile uint32_t controller_status;
+extern volatile int vip_seq;
+extern volatile int cmd_seq;
+extern volatile uint32_t *INTER_ENABLE;
 
-#define MACHINE_TIMER 0x80000007
-#define MACHINE_EXTRENEL 0x80000001
+volatile int vip_seq=0;
+volatile int cmd_seq=0;
+volatile uint32_t *INTER_ENABLE=(volatile uint32_t *)(0x40000000);
 
 void init(void){
     uint8_t *Source = _erodata;
@@ -60,11 +62,11 @@ void init(void){
     csr_enable_interrupts();    // Global interrupt enable
     MTIMECMP_LOW = 1;
     MTIMECMP_HIGH = 0;
+    // *INTER_ENABLE=0x07;
 
 }
 
-extern volatile int global;
-extern volatile uint32_t controller_status;
+
 
 void  c_interrupt_handler(int mcause,int mepc){
     switch(mcause){
@@ -74,10 +76,14 @@ void  c_interrupt_handler(int mcause,int mepc){
         }
         break;
         
-        controller_status = CONTROLLER;
-        
+        // controller_status = CONTROLLER;
     }
-
+    if(INTER_PENDING & 0x04 ==1){
+        cmd_seq++;
+    }
+    if(INTER_PENDING & 0x02 ==1){
+        vip_seq++;
+    }
 }
 
 
@@ -87,7 +93,15 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
     if(call == 0){
         ret=global;
     }else if(call ==1){
+        // buttonInterrupt
         ret=CONTROLLER;
+    }else if(call ==2){
+        // cmdInterrupt
+        ret=cmd_seq;
+
+    }else if(call ==3){
+        // videoInterrupt
+        ret=vip_seq;
     }
 
     return ret;

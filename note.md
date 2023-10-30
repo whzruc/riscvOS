@@ -1,5 +1,3 @@
-
-
 ## 程序结构分析
 
 - crt0.s 启动程序 先调用init 再调用main 不用改
@@ -30,8 +28,6 @@
     
     - 读取控制器状态并将其保存在controller_status中
 
-
-
 ## 任务拆解
 
 ### 时钟中断
@@ -44,15 +40,13 @@
 
 ## cartridge
 
-
-
 期望的结果是插入cartridge之后 可以使用图形模式绘制一个图像
 
 因为期望的系统调用在cartridge中，所以需要先实现这个
 
-
-
 :exclamation:
+
+
 
 
 
@@ -82,8 +76,6 @@ Text Palette
 
 应该是对于颜色的全局定义
 
-
-
 Graphics Mode
 
 与第一版不同主要是在背景图
@@ -96,23 +88,41 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 (想全屏显示X应该是512 Y应该是288)
 
-
-
 先生成背景图 然后更改Mode control 的mode位即可 其他保持不变
 
 :exclamation:
 
 
 
-
-
-
-
-
-
 ## video 和command 中断
 
-也清楚怎么弄了
+
+
+ Interrupt Enable Register
+
+The layout of the Interrupt Enable Register can be seen in the table below. 
+
+| Bit         | 31..6    | 5    | 4    | 3        | 2    | 1   | 0   |
+| ----------- | -------- | ---- | ---- | -------- | ---- | --- | --- |
+| Description | Reserved | D2IE | D1IE | Reserved | CMIE | VIE | CIE |
+
+The CIE bit represents the Cartridge Interrupt Enable bit, the VIE bit represents the Video Interrupt Enable bit, the CMIE bit represents the Command Interrupt Enable bit, and the D1IE and D2IE bits represent the DMA channel 1 and 2 Interrupt Enable bits respectively. The CIE, VIE, CMIE, D1IE, and D2IE have corresponding Pending Interrupt bits CIP, VIP, CMIP, D1IP, and D2IP in the [Interrupt Pending Register](#interrupt-pending-register).
+
+Interrupt Pending Register
+
+See table below for the layout of the Interrupt Pending Register. The pending interrupt is cleared by writing a 1 to the corresponding bit, **NOT** by writing a zero. The reason for writing a 1 is that the register doesn't need to be read ANDed and then written back in order to clear the pending interrupt. 
+
+| Bit         | 31..6    | 5    | 4    | 3        | 2    | 1   | 0   |
+| ----------- | -------- | ---- | ---- | -------- | ---- | --- | --- |
+| Description | Reserved | D2IP | D1IP | Reserved | CMIP | VIP | CIP |
+
+中断使能寄存器 开所有中断
+
+Pending Register中断待处理寄存器
+
+某个中断事件发生 对应的中断位会被置为1，表示该中断事件需要被处理
+
+位 2 是 CMIP（命令中断待处理位），位 1 是 VIP（视频中断待处理位），位 0 是 CIP（卡带中断待处理位）
 
 例子是在cart中用了，在这个作业里面在firmware中使用 初始化图形界面时video中断，开始接收键盘中断控制光标移动，按下cmd后触发cmd中断，切换显示模式
 
@@ -130,8 +140,10 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 需要判断mcause的值是不是11[原因](https://web.cecs.pdx.edu/~harry/riscv/RISCV-Summary.pdf)
 
+:heavy_check_mark:
+
+这里引用了例子的代码，别的方式我尝试了，都是不行的，原因未知
 
 
-:exclamation:
 
 

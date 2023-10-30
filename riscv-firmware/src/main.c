@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "include/timer.h"
+#include "include/kernel.h"
 
 volatile int global = 42;
 volatile uint32_t controller_status = 0;
@@ -44,12 +45,15 @@ int main() {
     TEXT_COLOR[2303]='9';
 
 
-
+    int k=0;
 
     while (1) {
 
         int c = a + b + global;
+        // VIDEO_MEMORY[k++]='B';
         if(global != last_global){
+
+            controller_status=getButtonStatus();
             if(controller_status){
                 VIDEO_MEMORY[x_pos] = ' ';
                 if(controller_status & 0x1){
@@ -80,9 +84,7 @@ int main() {
                 }
                 // cartridgae 
                 if((*CARTRIDGE)&0x1){
-                    for(int i=0;i<64*36;i++){
-                        VIDEO_MEMORY[i]=0;
-                    }
+                    
                     ((FunPtr)((*CARTRIDGE)&0xFFFFFFFC))();
                 }
                 //command interrupt stop the timer

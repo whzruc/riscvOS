@@ -1,20 +1,13 @@
 .section .text, "ax"
 .global _interrupt_handler
 _interrupt_handler:
-    addi    sp,sp,-4
-    sw      ra,0(sp)
-    csrr    ra,mcause
-    addi    ra,ra,-11
-    beqz    ra,_system_call   
-    lw      ra,0(sp)
-    addi    sp,sp,4
     csrw    mscratch,ra
     csrr    ra,mcause
     addi    ra,ra,-11
     beqz    ra,_system_call
     csrr    ra,mscratch
     addi	sp,sp,-44
-    sw      gp,40(sp)
+    sw	    gp,40(sp)
     sw	    ra,36(sp)
     sw	    t0,32(sp)
     sw	    t1,28(sp)
@@ -30,9 +23,8 @@ _interrupt_handler:
     la gp, __global_pointer$
     .option pop
     csrr    a0,mcause
-    csrr    a1,mepc
     call    c_interrupt_handler
-    lw      gp,40(sp)
+    lw	    gp,40(sp)
     lw	    ra,36(sp)
     lw	    t0,32(sp)
     lw	    t1,28(sp)
@@ -48,11 +40,18 @@ _interrupt_handler:
 _system_call:
     csrr    ra,mscratch
     csrw    mepc,ra
-    csrw    mscratch,gp
+    /*csrw    mscratch,gp*/
+    addi	sp,sp,-4
+    sw	    gp,0(sp)
     .option push
     .option norelax
     la gp, __global_pointer$
     .option pop
     call    c_system_call
-    csrr    gp,mscratch
+    /*csrr    gp,mscratch*/
+    lw	    gp,0(sp)
+    addi	sp,sp,4
     mret
+
+
+# reference https://github.com/XiaoxingChen/flitos/blob/chenxx/develop/riscv-firmware/src/interrupt.s

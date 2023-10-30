@@ -14,13 +14,4 @@ _start:
     jal zero, main
     .cfi_endproc
 
-.section .text, "ax"
-.global getTicks,getButtonStatus,getCmdInterrupted,getVideoInterrupted
 
-getTicks:
-    li a3,0
-    ecall
-
-getButtonStatus:
-    li a3,1
-    ecall
