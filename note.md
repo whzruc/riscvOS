@@ -44,7 +44,12 @@
 
 因为期望的系统调用在cartridge中，所以需要先实现这个
 
-:exclamation:
+
+
+换了给的例子之后可以正常触发中断并且显示正确的结果
+
+:heavy_check_mark:
+
 
 
 
@@ -91,6 +96,10 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 先生成背景图 然后更改Mode control 的mode位即可 其他保持不变
 
 :exclamation:
+
+
+
+这一部分选择在cartridge中实现
 
 
 
@@ -143,7 +152,6 @@ Pending Register中断待处理寄存器
 :heavy_check_mark:
 
 这里引用了例子的代码，别的方式我尝试了，都是不行的，原因未知
-
 
 
 
