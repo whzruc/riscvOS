@@ -98,6 +98,7 @@ int main() {
             getVideoInterrupted();
 
             if((*CARTRIDGE)&0x1){
+                *MODE_REGISTER = 0;
                 FunctionPtr Fun = (FunctionPtr)((*CARTRIDGE) & 0xFFFFFFFC);
                 Fun(); 
             }
