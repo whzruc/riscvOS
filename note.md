@@ -1,3 +1,5 @@
+# Phase 2
+
 ## 程序结构分析
 
 - crt0.s 启动程序 先调用init 再调用main 不用改
@@ -28,7 +30,7 @@
     
     - 读取控制器状态并将其保存在controller_status中
 
-## 任务拆解
+### 任务拆解
 
 ### 时钟中断
 
@@ -38,7 +40,7 @@
 
 :heavy_check_mark:
 
-## cartridge
+### cartridge
 
 期望的结果是插入cartridge之后 可以使用图形模式绘制一个图像
 
@@ -55,7 +57,7 @@
 
 
 
-## Draw something in graphics mode
+### Draw something in graphics mode
 
 text模式
 
@@ -103,7 +105,7 @@ XY 表示图像的左上位置 Z表示 图层直接设置为0即可
 
 
 
-## video 和command 中断
+### video 和command 中断
 
 
 
@@ -152,6 +154,44 @@ Pending Register中断待处理寄存器
 :heavy_check_mark:
 
 这里引用了例子的代码，别的方式我尝试了，都是不行的，原因未知
+
+
+
+
+
+# Phase 3
+
+## to-do list
+
+### 在firmware中实现系统调用
+
+基本思路
+
+仿照例子实现，ecs为辅助的数据结构 cs251打头的是kernel源码
+
+我这里全部放在firmware一个路径下面避免混淆
+
+
+
+### 为其他group编写cartridge以及测试功能
+
+
+
+:question:
+
+
+
+
+
+### 完善之前的代码
+
+之前的代码里面有几个video的函数还是有问题，需要再debug一下
+
+
+
+如果有合适好用的debug工作就很好做，没有就很麻烦，先暂时放一下
+
+
 
 
 

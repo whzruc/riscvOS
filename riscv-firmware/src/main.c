@@ -2,6 +2,7 @@
 #include "include/timer.h"
 #include "include/kernel.h"
 #include "include/video.h"
+#include "include/utils.h"
 
 
 // volatile int global = 42;
@@ -31,9 +32,11 @@ volatile uint32_t *CARTRIDGE=(volatile uint32_t *)(0x4000001C);
 
 volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
 volatile uint8_t *MEDIUM_DATA = (volatile uint8_t *)(0x500D0000);
+volatile uint8_t *BACKGROUND_DATA=(volatile uint8_t *)(0x50000000);
 uint8_t *medium_data;
 uint8_t *background_data;
 volatile uint32_t *MEDIUM_PALETTE = (volatile uint32_t *)(0x500F2000);
+volatile uint32_t *BACKGROUND_PALETTE=(volatile uint32_t *)(0x500F000);
 volatile uint32_t *MEDIUM_CONTROL = (volatile uint32_t *)(0x500F5F00);
 volatile uint32_t *MODE_REGISTER = (volatile uint32_t *)(0x500F6780);
 uint32_t* PALETTE1;
@@ -82,17 +85,29 @@ int main() {
         for(int j=0;j<DISPLAY_WITDH;j++){
             int cnt=i*DISPLAY_HEIGHT+j;
             background_data[cnt]=1;
+            BACKGROUND_DATA[cnt]=1;
         }
     }
     // *PALETTE1=0xFFFF0000;
     // setBackGround(0,background_data);
     // setSprite(0,medium_data,Medium);
-    initSpritesPalettes(1,0xFFFFFFFF,Medium);
+    uint8_t background_color_palette[4*0x100];
+    for(int i = 0; i < 0x100; i++)
+    {
+        background_color_palette[4 * i + 0] = 0xff - i;
+        background_color_palette[4 * i + 1] = 0;
+        background_color_palette[4 * i + 2] = i;
+        background_color_palette[4 * i + 3] = 0xff;
+    }
+    // initBackGroundPalettes(0,background_color_palette);
+    initSpritesPalettes(1,0xFFFFFFBC,Medium);
+    // BACKGROUND_PALETTE[1]=0xFFFF0000;
     // MEDIUM_PALETTE[1] = 0xFFFF0000; // A R G B
     MEDIUM_CONTROL[0] = MediumControl(0, 0, 0, 0, 0);
     // setSpriteControl(0,0,0,0,0,Medium);
-    // *MODE_REGISTER = 1;
+    *MODE_REGISTER = 1;
     while (1) {
+        // line_printf(3,"test");
         int c = a + b + global;
         if(global != last_global){
             getVideoInterrupted();
@@ -102,7 +117,7 @@ int main() {
                 FunctionPtr Fun = (FunctionPtr)((*CARTRIDGE) & 0xFFFFFFFC);
                 Fun(); 
             }
-            changeVideoModel();
+            // changeVideoModel();
             controller_status=getButtonStatus();
             if(controller_status){
                 VIDEO_MEMORY[x_pos] = ' ';
@@ -139,3 +154,5 @@ int main() {
 uint32_t MediumControl(uint8_t palette, int16_t x, int16_t y, uint8_t z, uint8_t index){
     return (((uint32_t)index)<<24) | (((uint32_t)z)<<21) | (((uint32_t)y+32)<<12) | (((uint32_t)x+32)<<2) | (palette & 0x3);
 }
+
+
