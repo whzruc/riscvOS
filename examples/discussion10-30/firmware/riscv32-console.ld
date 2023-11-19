@@ -13,7 +13,7 @@ MEMORY
     /* riscv-console virt machine FLASH */
     FLASH (rx)  : ORIGIN = 0x00000000, LENGTH = 16M
     /* riscv-console virt machine RAM */
-    RAM (rwx)   : ORIGIN = 0x70000000, LENGTH = 16M
+    RAM (rwx)   : ORIGIN = 0x70000000, LENGTH = 8M
     
 }
 ENTRY(_start)
@@ -68,7 +68,6 @@ SECTIONS
         . = ALIGN(4);
         _esdata = .;        /* end of .data segment */
     } > RAM AT >FLASH       /* .sdata segment starts directly after the .text section in FLASH */
-
     _heap_base = MAX(_erodata, MAX(_edata,_esdata));
     _stack = __stack_top - 4096;
     /* uninitialized data which is initialized to 0 upon after reset */

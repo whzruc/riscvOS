@@ -1,7 +1,5 @@
 #pragma once
 #include<stdint.h>
-#include "include/tcb.h"
-#include "include/dqueue.h"
 
 
 #define INTER_PENDING   (*((volatile uint32_t *)0x40000004))
@@ -15,6 +13,7 @@
 
 
 #define MACHINE_TIMER 0x80000007
+#define EXTERNAL 0x8000000b
 
 
 uint32_t getTicks();
