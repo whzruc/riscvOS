@@ -9,6 +9,7 @@ OBJCOPY=$(TOOLPREFIX)objcopy
 OBJDUMP=$(TOOLPREFIX)objdump
 STRIP=$(TOOLPREFIX)strip
 
+KERNEL_INC_DIR=../riscv-firmware/src/include
 INC_DIR = ./include
 SRC_DIR = ./src
 OBJ_DIR = ./obj
@@ -30,16 +31,13 @@ CFLAGS   += -ffreestanding  -nostartfiles -nostdlib -nodefaultlibs
 LDFLAGS  +=
 LDFLAGS  += -Wl,--gc-sections -Wl,-T,$(LDFILE)
 
-TARGET_NAME = riscv-console-example
+TARGET_NAME = riscv-cartridge
 
 TARGET_OBJS =   $(OBJ_DIR)/main.o               \
                 $(OBJ_DIR)/crt0.o               \
                 $(OBJ_DIR)/interrupt.o          \
-<<<<<<< HEAD
-                $(OBJ_DIR)/startup.o
-=======
                 $(OBJ_DIR)/startup.o			\
->>>>>>> b0044aecb2053ff8d5c73f868ce8aa905487e026
+				$(OBJ_DIR)/printf.o
 
 all: directories $(BIN_DIR)/$(TARGET_NAME)
 
