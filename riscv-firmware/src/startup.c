@@ -120,7 +120,7 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
     }else if(call ==4){
         // ThreadInit
         if(current_thread_num<=10){
-            ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), (TContextEntry)a1, (void *)a2);
+            ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), (TContextEntry)a0, (void *)a1);
             current_thread_num++;
         }
     }

@@ -147,6 +147,8 @@ volatile int global = 42;
 volatile uint32_t controller_status = 0;
 
 volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
+volatile int start_main_pos=0x40*2;
+volatile int start_other_pos=0x40*3;
 
 
 void OtherThreadFunction(void *);
@@ -176,14 +178,19 @@ int main() {
     // VIDEO_MEMORY[9] = 'l';
     // VIDEO_MEMORY[10] = 'd';
     // VIDEO_MEMORY[11] = '!';
-    // VIDEO_MEMORY[12] = 'X';
+    VIDEO_MEMORY[12] = 'X';
 
-    OtherThread = ContextInitialize(OtherThreadStack + 128, OtherThreadFunction, NULL);
+    // OtherThread = threadInit(OtherThreadStack + 128, OtherThreadFunction, NULL);
+    threadInit(OtherThreadFunction,NULL);
+
+    
+
 
 
     while (1) {
         int c = a + b + global;
         if(global != last_global){
+            controller_status=getButtonStatus();
             if(controller_status){
                 VIDEO_MEMORY[x_pos] = ' ';
                 if(controller_status & 0x1){
@@ -208,7 +215,9 @@ int main() {
                 }
                 VIDEO_MEMORY[x_pos] = 'X';
             }
-            ContextSwitch(&MainThread,OtherThread);
+            VIDEO_MEMORY[start_main_pos]='A';
+            VIDEO_MEMORY[start_other_pos]=' ';
+            // ContextSwitch(&MainThread,OtherThread);
             last_global = global;
         }
     }
@@ -219,8 +228,10 @@ void OtherThreadFunction(void *){
     int last_global = global;
     while(1){
         VIDEO_MEMORY[0x40*1+0]='A';
+        VIDEO_MEMORY[start_main_pos]='B';
+        VIDEO_MEMORY[start_other_pos]='B';
         if(global != last_global){
-            ContextSwitch(&OtherThread,MainThread);
+            // ContextSwitch(&OtherThread,MainThread);
             last_global = global;
         }
     }

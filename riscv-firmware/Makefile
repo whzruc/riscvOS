@@ -43,6 +43,7 @@ TARGET_OBJS =   $(OBJ_DIR)/main.o               \
 				$(OBJ_DIR)/video.o				\
 				$(OBJ_DIR)/memory.o				\
 				$(OBJ_DIR)/thread.o				\
+				$(OBJ_DIR)/mutex.o				\
 				
 
 all: directories $(BIN_DIR)/$(TARGET_NAME)
