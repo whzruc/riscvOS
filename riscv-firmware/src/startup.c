@@ -28,7 +28,7 @@ volatile uint32_t *INT_PENDING = (volatile uint32_t *)(0x40000004);
 int small_sprite_count = 0; // max: 128 small sprites
 int medium_sprite_count = 0; // max: 
 int large_sprite_count = 0; // max: 64 large sprites
-int current_thread_num=1;
+int current_thread_num=1;// existing main
 int running_thread_pointer=0;
 
 uint32_t ThreadStack[9][2048]={'0'};
@@ -104,20 +104,23 @@ void  c_interrupt_handler(int mcause,int mepc){
 
 uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
     uint32_t ret=0xffffffff;
-
-    if(call == 0){
+    if(call ==0){
+        // OSinitialize
+        ret=OSinitialize((void *)a0);
+    }
+    else if(call == 1){
         ret=global;
-    }else if(call ==1){
+    }else if(call ==2){
         // buttonInterrupt
         ret=CONTROLLER;
-    }else if(call ==2){
+    }else if(call ==3){
         // cmdInterrupt
         ret=cmd_seq;
 
-    }else if(call ==3){
+    }else if(call ==4){
         // videoInterrupt
         ret=vip_seq;
-    }else if(call ==4){
+    }else if(call ==5){
         // ThreadInit
         if(current_thread_num<=10){
             ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), (TContextEntry)a0, (void *)a1);

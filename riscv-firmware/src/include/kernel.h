@@ -12,6 +12,10 @@
 #define MTIMECMP_HIGH   (*((volatile uint32_t *)0x40000014))
 #define CONTROLLER      (*((volatile uint32_t *)0x40000018))
 
+#define STATUS_FAILURE      ((TStatus)0x00);
+#define STATUS_SUCCESS      ((TStatus)0x01);
+#define STATUS_INVALD_ID    ((TStatus)0x02);
+
 
 
 

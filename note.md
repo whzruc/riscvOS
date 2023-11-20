@@ -167,6 +167,14 @@ Pending Register中断待处理寄存器
 
 考虑之后提供xxxtest更直观一些
 
+后续的测试考虑实现在cartridge里面
+
+main里面只提供两个进程
+
+idle
+
+还有waitfor cartidge
+
 #### context_switch
 
 结合例子 测试是在定时器中实现定时切换两个线程的上下文 一个显示A 一个显示OS_start
@@ -195,11 +203,55 @@ Pending Register中断待处理寄存器
 
 
 
-#### memory_pool
+#### osInit
 
+初始化并且为thread数组分配空间
 
+初始化idle进程写在main函数里面
 
 #### thread
+
+- ThreadID *threadCreate*(TContextEntry entry,*void* ***param,*uint32_t* memsize,ThreadPriority prio)
+- TStatus *threadDelete*(ThreadID tid);
+
+- TStatus *threadActivate*(ThreadID tid);
+- TStatus *threadTerminate*(ThreadID tid,ThreadReturn retval);
+- TStatus *threadWait*(ThreadID tid,ThreadReturn*** retvalref,Tick timeout )
+- ThreadID *threadId*();*// get current tid*
+- ThreadStatus *threadState*(ThreadID tid); *//  get the thread's status*
+- TStatus *threadSleep*(Tick tick); *// unknow?*
+
+
+
+#### scheduler
+
+进程发送切换的时机
+
+- 主动放弃，显示调用wait或者sleep
+- 想获取的资源当前不可用 获得未释放的锁
+- 外部中断，进行进程切换
+
+
+
+进程调度算法
+
+包含
+
+队列的存的就是tid 自己实现了一个 但是不是线程安全的 
+
+ready_list 优先队列 排序方法为优先级 存放着未开始执行的队列 执行进程调度时优先级作为先后的顺序
+
+
+
+Waiting_list 普通队列 (调用sleep或wait后 放入该队列)
+
+finsih_list list 普通队列 执行完进程之后放入这个队列进行删除资源 不能转为其他状态(一个进程执行完毕或者exit之后直接删除)
+
+
+
+当用户进程A发生中断或系统调用之后，首先其中断帧会被保存，CPU进入内核态，执行中断处理函数。在执行完毕中断处理函数后，操作系统检查当前进程是否需要调度，如果需要，就把当前的进程状态保存，switch到另一个进程B中。注意在执行上面的操作的时候，进程A处于内核态，类似的，调度后我们到达的是进程B的内核态。进程B从系统调用中返回，继续执行。如果进程B在中断或系统调用中被调度，控制权可能转交给进程A的内核态，这样进程A从内核态返回后就可以继续执行之前的代码了。
+
+![Flowchart](/home/whz/Downloads/Flowchart.jpg)
 
 
 

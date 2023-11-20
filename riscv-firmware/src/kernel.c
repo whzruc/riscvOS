@@ -4,9 +4,25 @@
 
 
 
-volatile ThreadID global_tid =2;
-
+volatile ThreadID global_tid =1;
+uint32_t *global_gp;
 struct TCB** threadArray;
+
+
+
+// run before main.c need to change the ctr0.s
+TStatus OSinitialize(uint32_t *gp){
+    threadArray=malloc(sizeof(void*)*MAX_THREAD_NUM);
+    // struct TCB* mainThread;
+
+    global_gp=gp;
+    if(global_gp==0){
+        return STATUS_FAILURE;
+    }
+    else{
+        return STATUS_SUCCESS;
+    }
+}
 
 
 ThreadID threadCreate(TContextEntry entry,void *param,uint32_t memsize,ThreadPriority prio){
@@ -25,7 +41,7 @@ ThreadID threadCreate(TContextEntry entry,void *param,uint32_t memsize,ThreadPri
             new_thread->memory_size=memsize;
             new_thread->tid=global_tid;
             new_thread->stack_base=sb;
-            new_thread->state=Created;
+            new_thread->state=INIT;
             new_thread->priority=prio;
             threadArray[global_tid]=new_thread;
             current_thread_num++;
@@ -37,11 +53,25 @@ ThreadID threadCreate(TContextEntry entry,void *param,uint32_t memsize,ThreadPri
 
 
 TStatus threadDelete(ThreadID tid){
-    
+    if(threadArray[tid]==NULL){
+        return STATUS_INVALD_ID;
+    }
+    struct TCB* currThread= threadArray[tid];
+    if(currThread->state!=FINISHED){
+        return STATUS_INVALD_ID;
+    }else{
+        current_thread_num--;
+        free(currThread->stack_base);
+        free(currThread);
+        threadArray[tid]=NULL;
+        return STATUS_SUCCESS;
+    }
 }
 
 TStatus threadActivate(ThreadID tid){
-
+    if(threadArray[tid]==NULL){
+        
+    }
 }
 
 TStatus threadTerminate(ThreadID tid,ThreadReturn retval){

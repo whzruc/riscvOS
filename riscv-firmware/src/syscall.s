@@ -1,23 +1,31 @@
 .section .text, "ax"
+.global initialize
 .global getTicks,getButtonStatus,getCmdInterrupted,getVideoInterrupted,threadInit
 
-getTicks:
+
+
+
+initialize:
     li a3,0
     ecall
 
-getButtonStatus:
+getTicks:
     li a3,1
     ecall
 
-getCmdInterrupted:
+getButtonStatus:
     li a3,2
+    ecall
+
+getCmdInterrupted:
+    li a3,3
     ecall
 
 
 getVideoInterrupted:
-    li a3,3
+    li a3,4
     ecall
 
 threadInit:
-    li a3,4
+    li a3,5
     ecall

@@ -44,6 +44,10 @@ TARGET_OBJS =   $(OBJ_DIR)/main.o               \
 				$(OBJ_DIR)/memory.o				\
 				$(OBJ_DIR)/thread.o				\
 				$(OBJ_DIR)/mutex.o				\
+				$(OBJ_DIR)/scheduler.o			\
+				$(OBJ_DIR)/queue.o				\
+				$(OBJ_DIR)/pqueue.o
+
 				
 
 all: directories $(BIN_DIR)/$(TARGET_NAME)

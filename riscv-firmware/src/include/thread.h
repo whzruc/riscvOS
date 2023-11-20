@@ -14,11 +14,11 @@ typedef uint32_t ThreadReturn;
 typedef uint32_t Tick;
 
 typedef enum{
-    Created,
-    Ready,
-    Running,
-    Waiting,
-    Dead
+    INIT=0,
+    READY,
+    RUNNING,
+    WAITING,
+    FINISHED
 }ThreadStatus;
 
 typedef enum{
@@ -49,6 +49,9 @@ typedef struct TCB
 
 
 
+
+
+extern struct TCB** threadArray;
 extern volatile ThreadID global_tid;
 
 TStackRef ContextInitialize(TStackRef stacktop, TContextEntry entry, void *param);
