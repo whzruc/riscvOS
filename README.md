@@ -61,7 +61,7 @@ The simulator can also be run in debug mode by adding the `-d` option to the `ri
 ![](docs/img/console-screenshot-debug.png)
 
 The `Run` button will run the system until it is clicked again, or until a breakpoint is hit. The `Step` button will execute a single instruction, and the `Clear` button will clear all breakpoints. Breakpoints can be toggled by double clicking the associated instruction. The `FW`, `CTR`, `CS`, and `VID` buttons will jump to the Firmware, Cartridge, Chipset, and Video Memory base addresses. The `GP` and `SP` buttons jump to the memory specified by the `gp` and `sp` registers.
-<<<<<<< HEAD
+
 =======
 # riscvOS
 # riscvOS
