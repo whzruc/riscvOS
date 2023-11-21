@@ -16,17 +16,32 @@
 #define STATUS_SUCCESS      ((TStatus)0x01);
 #define STATUS_INVALD_ID    ((TStatus)0x02);
 
+extern volatile uint32_t *CARTRIDGE;
+
+// cmd and video
+extern volatile int vip_seq;
+extern volatile int cmd_seq;
+extern volatile uint32_t *MODE_REGISTER;
+extern volatile char *VIDEO_MEMORY ;
 
 
 
-// hardware
+// controller
+extern volatile uint32_t controller_status;
+
+
+
+// interrupt pending
+extern volatile uint32_t *INT_PENDING;
+
+// hardware interrupt
 #define MACHINE_TIMER 0x80000007
 #define EXTERNAL 0x8000000b
 
 // def
 typedef uint32_t TStatus;// total status
 
-// systemcall 
+// systemcall implemented in the syscall.s
 uint32_t getTicks();
 uint32_t getButtonStatus();
 uint32_t getCmdInterrupted();

@@ -16,13 +16,12 @@ extern uint8_t _ebss[];
 
 extern volatile int global;
 extern volatile uint32_t controller_status;
-extern volatile int vip_seq;
-extern volatile int cmd_seq;
 extern volatile uint32_t *INTER_ENABLE;
 
 
-volatile uint32_t *INT_PENDING = (volatile uint32_t *)(0x40000004);
 
+volatile int vip_seq=1;
+volatile int cmd_seq=1;
 
 // Nuber of sprites: 0~127: small sprite; 128~191: large sprite
 int small_sprite_count = 0; // max: 128 small sprites
@@ -35,9 +34,12 @@ uint32_t ThreadStack[9][2048]={'0'};
 TStackRef ThreadPointers[10]={'0'};
 
 
-volatile int vip_seq=0;
-volatile int cmd_seq=0;
+volatile uint32_t *INT_PENDING = (volatile uint32_t *)(0x40000004);
+volatile uint32_t *MODE_REGISTER = (volatile uint32_t *)(0x500F6780);
 volatile uint32_t *INTER_ENABLE=(volatile uint32_t *)(0x40000000);
+volatile uint32_t controller_status = 0;
+volatile uint32_t *CARTRIDGE=(volatile uint32_t *)(0x4000001C);
+volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
 
 void init(void){
     uint8_t *Source = _erodata;
@@ -57,6 +59,7 @@ void init(void){
     csr_enable_interrupts();    // Global interrupt enable
     MTIMECMP_LOW = 1;
     MTIMECMP_HIGH = 0;
+    *MODE_REGISTER=0;
     // *INTER_ENABLE=0x07;
 
 }
@@ -76,17 +79,19 @@ void  c_interrupt_handler(int mcause,int mepc){
         }
         break;
         case EXTERNAL:{
-            if(INTER_PENDING & 0x04 ==1){
-                // cmd_interrupt
-                cmd_seq++;
-            }
-            if(INTER_PENDING & 0x02 ==1){
-                // video_interrupt
-                vip_seq++;
-            }
-            if(INTER_PENDING & 0x01==1){
-                //cart
-            }
+            // if(INTER_PENDING & 0x04 ==1){
+            //     // cmd_interrupt
+            //     // cmd_seq++;
+            //     cmd_interrupt();
+                
+            // }
+            // if(INTER_PENDING & 0x02 ==1){
+            //     // video_interrupt
+            //     vip_seq++;
+            // }
+            // if(INTER_PENDING & 0x01==1){
+            //     //cart
+            // }
         }
         break;
         default:
@@ -98,6 +103,19 @@ void  c_interrupt_handler(int mcause,int mepc){
         const uint32_t MASK = ~(1U << BIT_POSITION);
         *INT_PENDING |= (1U << BIT_POSITION) & MASK;
     }
+                if(INTER_PENDING & 0x04 ==1){
+                // cmd_interrupt
+                // cmd_seq++;
+                cmd_interrupt();
+                
+            }
+            if(INTER_PENDING & 0x02 ==1){
+                // video_interrupt
+                vip_seq++;
+            }
+            if(INTER_PENDING & 0x01==1){
+                //cart
+            }
 
 }
 
@@ -129,4 +147,14 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
     }
 
     return ret;
+}
+
+
+void cmd_interrupt(){
+    VIDEO_MEMORY[0x40*3]='C';
+    if(*MODE_REGISTER){
+        *MODE_REGISTER=0;
+    }else{
+        *MODE_REGISTER = 1;
+    }
 }
