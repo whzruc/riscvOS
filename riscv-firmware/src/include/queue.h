@@ -14,7 +14,7 @@ int isEmpty(Queue *q);
 int isFull(Queue *q);
 void enqueue(Queue *q, int value);
 int dequeue(Queue *q);
-void printQueue(Queue *q);
+// void printQueue(Queue *q);
 void destroyQueue(Queue *q);
 
 #endif /* QUEUE_H */

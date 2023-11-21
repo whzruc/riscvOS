@@ -10,4 +10,16 @@ typedef struct {
 } PriorityQueue;
 
 
+void swap(int *a, int *b);
+
+void heapifyUp(PriorityQueue *pq, int index);
+void heapifyDown(PriorityQueue *pq, int index);
+
+PriorityQueue* createPriorityQueue(int capacity);
+
+void insert(PriorityQueue *pq, int value);
+int extractMin(PriorityQueue *pq);
+
+void destroyPriorityQueue(PriorityQueue *pq);
+
 #endif

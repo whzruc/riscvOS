@@ -27,7 +27,7 @@ volatile int cmd_seq=1;
 int small_sprite_count = 0; // max: 128 small sprites
 int medium_sprite_count = 0; // max: 
 int large_sprite_count = 0; // max: 64 large sprites
-int current_thread_num=1;// existing main
+int current_thread_num=1;// existing main()
 int running_thread_pointer=0;
 
 uint32_t ThreadStack[9][2048]={'0'};
@@ -103,24 +103,24 @@ void  c_interrupt_handler(int mcause,int mepc){
         const uint32_t MASK = ~(1U << BIT_POSITION);
         *INT_PENDING |= (1U << BIT_POSITION) & MASK;
     }
-                if(INTER_PENDING & 0x04 ==1){
+    if(INTER_PENDING & 0x04 ==1){
                 // cmd_interrupt
                 // cmd_seq++;
-                cmd_interrupt();
+        cmd_interrupt();
                 
-            }
-            if(INTER_PENDING & 0x02 ==1){
-                // video_interrupt
-                vip_seq++;
-            }
-            if(INTER_PENDING & 0x01==1){
-                //cart
-            }
+    }
+    if(INTER_PENDING & 0x02 ==1){
+        // video_interrupt
+        vip_seq++;
+    }
+    if(INTER_PENDING & 0x01==1){
+        //cart
+    }
 
 }
 
 
-uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
+uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3, uint32_t call){
     uint32_t ret=0xffffffff;
     if(call ==0){
         // OSinitialize
@@ -144,6 +144,19 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t call){
             ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), (TContextEntry)a0, (void *)a1);
             current_thread_num++;
         }
+    }else if(call==6){
+        // thread_create
+        if(current_thread_num<=MAX_THREAD_NUM){
+            return threadCreate((TContextEntry)a0,(void *)a1,(uint32_t)a2,(ThreadPriority)a3);
+        }
+    }else if(call==7){
+        // thread_yield
+        return threadActivate((ThreadID) a0);
+    }else if(call==8){
+        // thread_exit
+        // first terminate then delete
+        threadTerminate((ThreadID)a0,ret);
+        return threadDelete((ThreadID) a0);
     }
 
     return ret;

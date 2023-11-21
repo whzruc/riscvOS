@@ -213,13 +213,12 @@ idle
 
 - ThreadID *threadCreate*(TContextEntry entry,*void* ***param,*uint32_t* memsize,ThreadPriority prio)
 - TStatus *threadDelete*(ThreadID tid);
-
 - TStatus *threadActivate*(ThreadID tid);
 - TStatus *threadTerminate*(ThreadID tid,ThreadReturn retval);
-- TStatus *threadWait*(ThreadID tid,ThreadReturn*** retvalref,Tick timeout )
 - ThreadID *threadId*();*// get current tid*
 - ThreadStatus *threadState*(ThreadID tid); *//  get the thread's status*
-- TStatus *threadSleep*(Tick tick); *// unknow?*
+
+
 
 
 
@@ -253,11 +252,27 @@ finsih_list list 普通队列 执行完进程之后放入这个队列进行删�
 
 ![Flowchart](/home/whz/Downloads/Flowchart.jpg)
 
+测试结果1
+
+在主进程之外创建两个进程 主进程什么都不做 进程1打印20个A 进程2打印20个B 
+
+测试1 两个进程优先级相同 根据优先队列 会间隔打印
+
+测试2 改变进程1的优先级 根据优先队列 会先打印A再打印B
+
+
+
+
+
 
 
 #### mutex
 
 
+
+
+
+#### condition
 
 
 

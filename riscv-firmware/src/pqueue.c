@@ -54,7 +54,8 @@ void insert(PriorityQueue *pq, int value) {
     heapifyUp(pq, pq->size - 1);
 }
 
-int extractMin(PriorityQueue *pq) {
+int extractMin(PriorityQueue *pq)
+{
     if (pq->size <= 0) {
         // printf("PriorityQueue is empty. Cannot extract minimum.\n");
         return -1;

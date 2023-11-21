@@ -13,6 +13,9 @@ typedef uint32_t ThreadID;
 typedef uint32_t ThreadReturn;
 typedef uint32_t Tick;
 
+#define THREAD_MEMORY 2048
+
+
 typedef enum{
     INIT=0,
     READY,
@@ -34,7 +37,7 @@ typedef struct TCB
     uint32_t *gp;
     ThreadStatus state;
     ThreadPriority priority;
-    uint32_t* sp;
+    uint32_t* sp; // TStackRef
     uint32_t memory_size;
     TContextEntry entry;
     void* param;
@@ -80,8 +83,10 @@ TStatus threadSleep(Tick tick); // unknow?
 
 
 
-
-
+// system calls
+ThreadID thread_create(TContextEntry entry, void* param, uint32_t  memsize,ThreadPriority prio);
+TStatus thread_yield(ThreadID tid);
+TStatus thread_exit(ThreadID tid);
 
 
 

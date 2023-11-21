@@ -47,9 +47,23 @@ uint32_t getButtonStatus();
 uint32_t getCmdInterrupted();
 uint32_t getVideoInterrupted();
 
+// thread def
 
 // status
 #define INVALD_THREAD_ID ((ThreadID)-1);
+
+
+// timer
+
+#define TICK_NUM 1
+#define MTIME_LOW       (*((volatile uint32_t *)0x40000008))
+#define MTIME_HIGH      (*((volatile uint32_t *)0x4000000C))
+#define MTIMECMP_LOW    (*((volatile uint32_t *)0x40000010))
+#define MTIMECMP_HIGH   (*((volatile uint32_t *)0x40000014))
+
+void set_timer(uint64_t msec);
+// millisecond
+void handle_time_interrupt();
 
 // assembly 
 __attribute__((always_inline)) inline uint32_t csr_mstatus_read(void)
