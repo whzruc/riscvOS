@@ -1,6 +1,7 @@
 #include "include/kernel.h"
 #include "include/thread.h"
 #include "include/scheduler.h"
+#include "include/memory.h"
 #include <stdlib.h>
 
 
@@ -12,9 +13,10 @@ struct scheduler* sched;
 
 
 
+
 // run before main.c need to change the ctr0.s
 TStatus OSinitialize(uint32_t *gp){
-    threadArray=malloc(sizeof(void*)*MAX_THREAD_NUM);
+    threadArray=kmalloc(sizeof(void*)*MAX_THREAD_NUM);
     // struct TCB* mainThread;
     initScheduler(sched);
 
@@ -37,8 +39,8 @@ ThreadID threadCreate(TContextEntry entry,void *param,uint32_t memsize,ThreadPri
             return INVALD_THREAD_ID;
         }
         else{
-            struct TCB* new_thread=malloc(sizeof(TCB));
-            uint8_t *sb=malloc(memsize);
+            struct TCB* new_thread=kmalloc(sizeof(TCB));
+            uint8_t *sb=kmalloc(memsize);
             new_thread->entry=entry;
             new_thread->param=param;
             new_thread->memory_size=memsize;
@@ -46,7 +48,11 @@ ThreadID threadCreate(TContextEntry entry,void *param,uint32_t memsize,ThreadPri
             new_thread->stack_base=sb;
             new_thread->state=INIT;
             new_thread->priority=prio;
-            threadArray[global_tid]=new_thread;
+            ThreadPointers[global_tid]=
+            ContextInitialize(
+                (TStackRef)(ThreadStack[global_tid - 1] + memsize),
+                (TContextEntry)entry,(void *)param);
+            new_thread->sp=ThreadPointers[global_tid];
             current_thread_num++;
             global_tid++;
             return new_thread->tid;
@@ -64,8 +70,8 @@ TStatus threadDelete(ThreadID tid){
         return STATUS_INVALD_ID;
     }else{
         current_thread_num--;
-        free(cur_thread->stack_base);
-        free(cur_thread);
+        kfree(cur_thread->stack_base);
+        kfree(cur_thread);
         threadArray[tid]=NULL;
         return STATUS_SUCCESS;
     }
@@ -76,17 +82,8 @@ TStatus threadActivate(ThreadID tid){
         return STATUS_INVALD_ID;
     }
     struct TCB* act_thread=threadArray[tid];
-    
-    act_thread->sp=ContextInitialize((TStackRef)(act_thread->stack_base+act_thread->memory_size),(TContextEntry)(act_thread->entry),(void*)act_thread->param);
-
     act_thread->state=READY;
-    insert(sched->ready,act_thread->priority);
-    // if the act_thread's priority > cur_thread's priority
-    struct TCB* cur_thread=threadArray[sched->current_tid];
-    if(cur_thread->priority>act_thread->priority){
-        schedule(sched);
-    }
-
+    enqueue(sched->ready,act_thread->tid);
 }
 
 TStatus threadTerminate(ThreadID tid,ThreadReturn retval){
@@ -143,26 +140,24 @@ void set_timer(uint64_t timestamp){
 void handle_time_interrupt(){
 
     set_timer(1000);
-    // if((++time_count%TICK_NUM)==0){
-    //     if(video_flag){
-    //     VIDEO_MEMORY[x]='A';
-    //     x++;
-    //     }
-    // }
+
     if (current_thread_num >= 2)
     {
         uint32_t mepc = csr_mepc_read();
         // printf("\n");
-        TInterruptState PrevState = CPUHALSuspendInterrupts();
-        // int t1, t2;
-        // t1 = running_thread_pointer;
+        TInterruptState PrevState = SuspendInterrupts();
+        int t1, t2;
+        t1 = running_thread_pointer;
         // t2 = (running_thread_pointer + 1) % current_thread_num;
         // running_thread_pointer = t2;
-        // ContextSwitch(&ThreadPointers[t1], ThreadPointers[t2]);
-        schedule(sched);
+        t2=schedule(sched);
+        if(t1!=t2){
+            ContextSwitch(&ThreadPointers[t1], ThreadPointers[t2]);
+        }
         csr_write_mepc(mepc);
-        CPUHALResumeInterrupts(PrevState);
+        ResumeInterrupts(PrevState);
     }
     
 
 }
+

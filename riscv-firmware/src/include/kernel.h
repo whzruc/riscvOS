@@ -47,6 +47,8 @@ uint32_t getButtonStatus();
 uint32_t getCmdInterrupted();
 uint32_t getVideoInterrupted();
 
+
+
 // thread def
 
 // status
@@ -64,6 +66,10 @@ uint32_t getVideoInterrupted();
 void set_timer(uint64_t msec);
 // millisecond
 void handle_time_interrupt();
+
+
+
+
 
 // assembly 
 __attribute__((always_inline)) inline uint32_t csr_mstatus_read(void)

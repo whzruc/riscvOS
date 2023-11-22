@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include "include/timer.h"
 #include "include/kernel.h"
 #include "include/thread.h"
+#include "include/memory.h"
 
 
 extern uint8_t _erodata[];
@@ -120,7 +120,7 @@ void  c_interrupt_handler(int mcause,int mepc){
 }
 
 
-uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3, uint32_t call){
+uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3, uint32_t a4, uint32_t call){
     uint32_t ret=0xffffffff;
     if(call ==0){
         // OSinitialize
@@ -141,7 +141,8 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3, uint32_t
     }else if(call ==5){
         // ThreadInit
         if(current_thread_num<=10){
-            ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), (TContextEntry)a0, (void *)a1);
+            ThreadPointers[current_thread_num]= ContextInitialize((TStackRef)(ThreadStack[current_thread_num - 1] + 2048), 
+            (TContextEntry)a0, (void *)a1);
             current_thread_num++;
         }
     }else if(call==6){

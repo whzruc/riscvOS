@@ -2,45 +2,49 @@
 .global initialize
 .global getTicks,getButtonStatus,getCmdInterrupted,getVideoInterrupted,threadInit
 .global thread_create,thread_yield,thread_exit
+.global kmalloc, kfree
 
 
 
 
 
 initialize:
-    li a4,0
+    li a5,0
     ecall
 
 getTicks:
-    li a4,1
+    li a5,1
     ecall
 
 getButtonStatus:
-    li a4,2
+    li a5,2
     ecall
 
 getCmdInterrupted:
-    li a4,3
+    li a5,3
     ecall
 
 
 getVideoInterrupted:
-    li a4,4
+    li a5,4
     ecall
 
 threadInit:
-    li a4,5
+    li a5,5
     ecall
 
 
 thread_create:
-    li a4,6
+    li a5,6
     ecall
 
 thread_yield:
-    li a4,7
+    li a5,7
     ecall
 
 thread_exit:
-    li a4,8
+    li a5,8
     ecall
+
+
+    

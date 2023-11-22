@@ -59,10 +59,9 @@ extern volatile ThreadID global_tid;
 
 TStackRef ContextInitialize(TStackRef stacktop, TContextEntry entry, void *param);
 void ContextSwitch(TStackRef *storecurrent, TStackRef restore);
-
 // simple
 TStatus threadInit(TContextEntry entry, void *param);
-
+uint32_t *init_Stack(uint32_t* sp, TContextEntry function, uint32_t param, uint32_t tp);
 // Thread variable
 extern uint32_t ThreadStack[9][2048];
 extern TStackRef ThreadPointers[10];
@@ -98,7 +97,8 @@ TStatus thread_exit(ThreadID tid);
 
 
 
-__attribute__((always_inline)) inline TInterruptState CPUHALSuspendInterrupts(void)
+
+__attribute__((always_inline)) inline TInterruptState SuspendInterrupts(void)
 {
     uint32_t result;
     asm volatile("csrrci %0, mstatus, 0x8"
@@ -106,19 +106,19 @@ __attribute__((always_inline)) inline TInterruptState CPUHALSuspendInterrupts(vo
     return result;
 }
 
-__attribute__((always_inline)) inline void CPUHALResumeInterrupts(TInterruptState state)
+__attribute__((always_inline)) inline void ResumeInterrupts(TInterruptState state)
 {
     asm volatile("csrs mstatus, %0"
                  :
                  : "r"(state & 0x8));
 }
 
-__attribute__((always_inline)) inline void CPUHALEnableInterrupts(void)
+__attribute__((always_inline)) inline void EnableInterrupts(void)
 {
     asm volatile("csrsi mstatus, 0x8");
 }
 
-__attribute__((always_inline)) inline void CPUHALDisableInterrupts(void)
+__attribute__((always_inline)) inline void DisableInterrupts(void)
 {
     asm volatile("csrci mstatus, 0x8");
 }

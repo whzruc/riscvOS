@@ -1,9 +1,10 @@
 #include "include/queue.h"
+#include "include/memory.h"
 #include <stdlib.h>
 
 Queue* createQueue(int capacity) {
-    Queue *q = (Queue*)malloc(sizeof(Queue));
-    q->array = (int*)malloc(sizeof(int) * capacity);
+    Queue *q = (Queue*)kmalloc(sizeof(Queue));
+    q->array = (int*)kmalloc(sizeof(int) * capacity);
     q->capacity = capacity;
     q->front = q->rear = -1;
     q->size = 0;
@@ -53,22 +54,8 @@ int dequeue(Queue *q) {
     return value;
 }
 
-// void printQueue(Queue *q) {
-//     printf("Queue: ");
-//     if (isEmpty(q)) {
-//         // printf("Empty");
-//     } else {
-//         int i = q->front;
-//         while (i != q->rear) {
-//             printf("%d ", q->array[i]);
-//             i = (i + 1) % q->capacity;
-//         }
-//         printf("%d", q->array[q->rear]);
-//     }
-//     printf("\n");
-// }
 
 void destroyQueue(Queue *q) {
-    free(q->array);
-    free(q);
+    kfree(q->array);
+    kfree(q);
 }

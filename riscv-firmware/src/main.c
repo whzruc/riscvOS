@@ -4,6 +4,7 @@
 #include "include/kernel.h"
 #include "include/video.h"
 #include "include/thread.h"
+#include "include/memory.h"
 
 
 // volatile int global = 42;
@@ -246,21 +247,30 @@ void thread2(void *){
     }
 }
 
-int main(){
-    char *Buffer = malloc(32);
-    strcpy(Buffer,"OS started!");
+void memory_test(){
+    char *Buffer=kmalloc(32);
+    strcpy(Buffer,"MEMORY TEST");
     strcpy((char *)(VIDEO_MEMORY),Buffer);
-    ThreadID t1= thread_create(thread1,NULL,THREAD_MEMORY,High);
-    ThreadID t2= thread_create(thread2,NULL,THREAD_MEMORY,High);
-    thread_yield(t1);
-    thread_yield(t2);
-    thread_exit(t1);
-    thread_exit(t2);
+    char *Buffer2 = kmalloc(32);
+    strcpy(Buffer2,"Thread test1 finished");
+    strcpy((char *)(VIDEO_MEMORY+0x40*5),Buffer2);
+}
+
+int main(){
+    // char *Buffer = malloc(32);
+    // strcpy(Buffer,"OS started!");
+    // strcpy((char *)(VIDEO_MEMORY),Buffer);
+    memory_test();
+    // threadInit(thread1,NULL);
+    // threadInit(thread2,NULL);
+    // ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
+
+    // thread_yield(t1);
+
+    // thread_exit(t1);
 
     while(1){
-        char *Buffer = malloc(32);
-        strcpy(Buffer,"Thread test1 finished");
-        strcpy((char *)(VIDEO_MEMORY+0x40*3),Buffer);
+
     }
     
 }

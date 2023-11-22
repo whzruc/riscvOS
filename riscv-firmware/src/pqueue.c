@@ -1,83 +1,72 @@
 #include "include/pqueue.h"
+#include "include/memory.h"
 #include <stdlib.h>
 
 
 
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-void heapifyUp(PriorityQueue *pq, int index) {
-    int parent = (index - 1) / 2;
-    while (index > 0 && pq->array[index] < pq->array[parent]) {
-        swap(&pq->array[index], &pq->array[parent]);
-        index = parent;
-        parent = (index - 1) / 2;
-    }
-}
-
-void heapifyDown(PriorityQueue *pq, int index) {
-    int leftChild = 2 * index + 1;
-    int rightChild = 2 * index + 2;
-    int smallest = index;
-
-    if (leftChild < pq->size && pq->array[leftChild] < pq->array[smallest])
-        smallest = leftChild;
-
-    if (rightChild < pq->size && pq->array[rightChild] < pq->array[smallest])
-        smallest = rightChild;
-
-    if (smallest != index) {
-        swap(&pq->array[index], &pq->array[smallest]);
-        heapifyDown(pq, smallest);
-    }
-}
-
-PriorityQueue* createPriorityQueue(int capacity) {
-    PriorityQueue *pq = (PriorityQueue*)malloc(sizeof(PriorityQueue));
-    pq->array = (int*)malloc(sizeof(int) * capacity);
-    pq->capacity = capacity;
+struct PriorityQueue* initializePriorityQueue(size_t capacity) {
+    struct PriorityQueue *pq = (struct PriorityQueue*)kmalloc(sizeof(struct PriorityQueue));
+    pq->heap = (struct Process*)kmalloc((capacity + 1) * sizeof(struct Process)); // Index starts from 1
     pq->size = 0;
+    pq->capacity = capacity;
     return pq;
 }
 
-void insert(PriorityQueue *pq, int value) {
+void freePriorityQueue(struct PriorityQueue *pq) {
+    kfree(pq->heap);
+    kfree(pq);
+}
+
+void insert(struct PriorityQueue *pq, struct Process process) {
     if (pq->size == pq->capacity) {
-        // printf("PriorityQueue is full. Cannot insert.\n");
+        // printf("Priority queue is full. Cannot insert.\n");
         return;
     }
 
-    pq->array[pq->size] = value;
     pq->size++;
-    heapifyUp(pq, pq->size - 1);
+    pq->heap[pq->size] = process;
+
+    size_t i = pq->size;
+    while (i > 1 && pq->heap[i].priority < pq->heap[i / 2].priority) {
+        struct Process temp = pq->heap[i];
+        pq->heap[i] = pq->heap[i / 2];
+        pq->heap[i / 2] = temp;
+        i /= 2;
+    }
 }
 
-int extractMin(PriorityQueue *pq)
-{
-    if (pq->size <= 0) {
-        // printf("PriorityQueue is empty. Cannot extract minimum.\n");
-        return -1;
+struct Process extractMin(struct PriorityQueue *pq) {
+    if (pq->size == 0) {
+        // printf("Priority queue is empty. Returning invalid process.\n");
+        return (struct Process){-1, -1};
     }
 
-    int minValue = pq->array[0];
-    pq->array[0] = pq->array[pq->size - 1];
+    struct Process minProcess = pq->heap[1];
+    pq->heap[1] = pq->heap[pq->size];
     pq->size--;
-    heapifyDown(pq, 0);
 
-    return minValue;
-}
+    size_t i = 1;
+    while (1) {
+        size_t leftChild = 2 * i;
+        size_t rightChild = 2 * i + 1;
+        size_t smallest = i;
 
-// void printPriorityQueue(PriorityQueue *pq) {
-//     printf("PriorityQueue: ");
-//     for (int i = 0; i < pq->size; ++i) {
-//         printf("%d ", pq->array[i]);
-//     }
-//     printf("\n");
-// }
+        if (leftChild <= pq->size && pq->heap[leftChild].priority < pq->heap[smallest].priority) {
+            smallest = leftChild;
+        }
+        if (rightChild <= pq->size && pq->heap[rightChild].priority < pq->heap[smallest].priority) {
+            smallest = rightChild;
+        }
 
-void destroyPriorityQueue(PriorityQueue *pq) {
-    free(pq->array);
-    free(pq);
+        if (smallest != i) {
+            struct Process temp = pq->heap[i];
+            pq->heap[i] = pq->heap[smallest];
+            pq->heap[smallest] = temp;
+            i = smallest;
+        } else {
+            break;
+        }
+    }
+
+    return minProcess;
 }

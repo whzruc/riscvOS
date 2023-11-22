@@ -1,5 +1,5 @@
 .section .text, "ax"
-.global ContextInitialize, ContextSwitch
+.global ContextInitialize, ContextSwitch, call_th_ent
 
 ContextInitialize:
     addi a0,a0,-56
@@ -55,6 +55,18 @@ ContextSwitch:
     csrsi mstatus, 0x8
     ret
     
+call_th_ent:
+    addi    sp,sp,-4
+    sw      ra, 0(sp)
+    mv      gp, a2
+    jalr    a1       # a1 should be the entry parameter
+    .option push
+    .option norelax
+    la      gp, __global_pointer$
+    .option pop
+    lw      ra, 0(sp)
+    addi    sp, sp, 4
+    ret
 
     # context_switch:
     # /*context_snapshot context_shot
