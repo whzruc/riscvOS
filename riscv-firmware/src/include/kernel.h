@@ -70,6 +70,10 @@ void handle_time_interrupt();
 
 
 
+// global variables
+
+
+
 
 // assembly 
 __attribute__((always_inline)) inline uint32_t csr_mstatus_read(void)

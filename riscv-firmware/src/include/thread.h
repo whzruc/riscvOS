@@ -59,6 +59,8 @@ extern volatile ThreadID global_tid;
 
 TStackRef ContextInitialize(TStackRef stacktop, TContextEntry entry, void *param);
 void ContextSwitch(TStackRef *storecurrent, TStackRef restore);
+void set_tp(ThreadID tid);
+ThreadID get_tp(void);
 // simple
 TStatus threadInit(TContextEntry entry, void *param);
 uint32_t *init_Stack(uint32_t* sp, TContextEntry function, uint32_t param, uint32_t tp);
@@ -67,6 +69,7 @@ extern uint32_t ThreadStack[9][2048];
 extern TStackRef ThreadPointers[10];
 extern int current_thread_num;
 extern int running_thread_pointer;
+extern ThreadID running_thread_id;
 
 
 // implement in kernel.c
@@ -85,7 +88,8 @@ TStatus threadSleep(Tick tick); // unknow?
 // system calls
 ThreadID thread_create(TContextEntry entry, void* param, uint32_t  memsize,ThreadPriority prio);
 TStatus thread_yield(ThreadID tid);
-TStatus thread_exit(ThreadID tid);
+// exit current thread
+TStatus thread_exit();
 
 
 

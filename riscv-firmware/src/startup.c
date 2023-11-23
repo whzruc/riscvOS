@@ -4,6 +4,7 @@
 #include "include/memory.h"
 
 
+
 extern uint8_t _erodata[];
 extern uint8_t _data[];
 extern uint8_t _edata[];
@@ -27,7 +28,7 @@ volatile int cmd_seq=1;
 int small_sprite_count = 0; // max: 128 small sprites
 int medium_sprite_count = 0; // max: 
 int large_sprite_count = 0; // max: 64 large sprites
-int current_thread_num=1;// existing main()
+int current_thread_num=0;// not exist main()
 int running_thread_pointer=0;
 
 uint32_t ThreadStack[9][2048]={'0'};
@@ -154,10 +155,10 @@ uint32_t c_system_call(uint32_t a0,uint32_t a1,uint32_t a2,uint32_t a3, uint32_t
         // thread_yield
         return threadActivate((ThreadID) a0);
     }else if(call==8){
-        // thread_exit
+        // thread_exit  // no params
         // first terminate then delete
-        threadTerminate((ThreadID)a0,ret);
-        return threadDelete((ThreadID) a0);
+        threadTerminate((ThreadID)running_thread_id,ret);
+        return ret;
     }
 
     return ret;

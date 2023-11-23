@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 Queue* createQueue(int capacity) {
-    Queue *q = (Queue*)kmalloc(sizeof(Queue));
-    q->array = (int*)kmalloc(sizeof(int) * capacity);
+    Queue *q = (Queue*)malloc(sizeof(Queue));
+    q->array = (int*)malloc(sizeof(int) * capacity);
     q->capacity = capacity;
     q->front = q->rear = -1;
     q->size = 0;
@@ -56,6 +56,6 @@ int dequeue(Queue *q) {
 
 
 void destroyQueue(Queue *q) {
-    kfree(q->array);
-    kfree(q);
+    free(q->array);
+    free(q);
 }

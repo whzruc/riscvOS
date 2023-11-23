@@ -16,6 +16,7 @@ typedef struct scheduler
     // PriorityQueue* ready;
     Queue* finished;
     ThreadID current_tid;
+    Queue* waiter;
 }scheduler;
 
 
@@ -23,7 +24,7 @@ typedef struct scheduler
 TStatus initScheduler(struct scheduler* schedule);
 
 // get the tid for running
-ThreadID schedule(struct scheduler* schedule);
+void schedule(struct scheduler* schedule);
 // switch the thread's status
 void switchThreadStateTo(ThreadID tid, const ThreadStatus new_state);
 

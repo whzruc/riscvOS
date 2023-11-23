@@ -211,7 +211,9 @@ idle
 
 初始化并且为thread数组分配空间
 
-初始化idle进程写在main函数里面
+初始化main进程
+
+不知道需不需要初始化idle进程
 
 #### thread
 
@@ -256,13 +258,27 @@ finsih_list list 普通队列 执行完进程之后放入这个队列进行删�
 
 ![Flowchart](/home/whz/Downloads/Flowchart.jpg)
 
-测试结果1
 
-在主进程之外创建两个进程 主进程什么都不做 进程1打印20个A 进程2打印20个B 
 
-测试1 两个进程优先级相同 根据优先队列 会间隔打印
 
-测试2 改变进程1的优先级 根据优先队列 会先打印A再打印B
+
+上述整体看到的结果是交替打印A和B 最后两个进程退出销毁资源 重新到main进程
+
+
+
+#### wait
+
+状态变为wait 这样在扫描队列时无法扫描到
+
+和后面的mutex condition联合测试
+
+唤醒，重新将其变为ready状态
+
+
+
+#### sleep
+
+和wait本质一样 需要实现延时
 
 
 
@@ -272,11 +288,47 @@ finsih_list list 普通队列 执行完进程之后放入这个队列进行删�
 
 #### mutex
 
+维护一个mutex数组 每创建一个mutex 
+
+每个mutex对象包含一个owner和waiting_list
+
+当上锁时，检测当前锁是否已经存在owner如果存在则阻塞当前线程，并且将线程加入该锁的等待队列
+
+如果该锁没有owner则上锁
+
+释放锁时
+
+如果waitinglist为空则直接释放owner
+
+如果waiting不空则将所有线程排除 同时恢复owner(测试了上面的wait)
+
+
+
 
 
 
 
 #### condition
+
+也有owner和waiting_list
+
+维护一个cond_list的数组
+
+wait等待锁 解锁 将当前thread放入waitinglist 挂起当前线程最后再上锁
+
+
+
+notifone
+
+让waitinglist中每个thread都重新唤醒
+
+
+
+notfiyAll
+
+重复调用waitinglist
+
+
 
 
 

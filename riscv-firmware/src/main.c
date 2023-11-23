@@ -238,6 +238,9 @@ void thread1(void *){
         VIDEO_MEMORY[pos1+count1++]='A';
         /* code */
     }
+    // explict
+    thread_exit();
+    return;
 }
 void thread2(void *){
     while (count2<40)
@@ -245,15 +248,15 @@ void thread2(void *){
         /* code */
         VIDEO_MEMORY[pos2+count2++]='B';
     }
+    thread_exit();
+    return;
 }
 
 void memory_test(){
-    char *Buffer=kmalloc(32);
+    char *Buffer=malloc(32);
     strcpy(Buffer,"MEMORY TEST");
     strcpy((char *)(VIDEO_MEMORY),Buffer);
-    char *Buffer2 = kmalloc(32);
-    strcpy(Buffer2,"Thread test1 finished");
-    strcpy((char *)(VIDEO_MEMORY+0x40*5),Buffer2);
+
 }
 
 int main(){
@@ -263,12 +266,17 @@ int main(){
     memory_test();
     // threadInit(thread1,NULL);
     // threadInit(thread2,NULL);
-    // ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
+    ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
+    // ThreadID t2=thread_create(thread2,NULL,THREAD_MEMORY,High);
 
-    // thread_yield(t1);
+    thread_yield(t1);
+    // thread_yield(t2);
 
-    // thread_exit(t1);
 
+
+    char *Buffer2 = malloc(32);
+    strcpy(Buffer2,"Thread test1 finished");
+    strcpy((char *)(VIDEO_MEMORY+0x40*5),Buffer2);
     while(1){
 
     }

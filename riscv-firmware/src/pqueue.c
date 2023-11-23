@@ -13,8 +13,8 @@ struct PriorityQueue* initializePriorityQueue(size_t capacity) {
 }
 
 void freePriorityQueue(struct PriorityQueue *pq) {
-    kfree(pq->heap);
-    kfree(pq);
+    free(pq->heap);
+    free(pq);
 }
 
 void insert(struct PriorityQueue *pq, struct Process process) {
