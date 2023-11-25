@@ -211,20 +211,13 @@ idle
 
 初始化并且为thread数组分配空间
 
-初始化main进程
 
-不知道需不需要初始化idle进程
+
+
 
 #### thread
 
-- ThreadID *threadCreate*(TContextEntry entry,*void* ***param,*uint32_t* memsize,ThreadPriority prio)
-- TStatus *threadDelete*(ThreadID tid);
-- TStatus *threadActivate*(ThreadID tid);
-- TStatus *threadTerminate*(ThreadID tid,ThreadReturn retval);
-- ThreadID *threadId*();*// get current tid*
-- ThreadStatus *threadState*(ThreadID tid); *//  get the thread's status*
-
-
+:heavy_check_mark:
 
 
 
@@ -264,21 +257,11 @@ finsih_list list 普通队列 执行完进程之后放入这个队列进行删�
 
 上述整体看到的结果是交替打印A和B 最后两个进程退出销毁资源 重新到main进程
 
-
-
-#### wait
-
-状态变为wait 这样在扫描队列时无法扫描到
-
-和后面的mutex condition联合测试
-
-唤醒，重新将其变为ready状态
+:heavy_check_mark:(firmware测试成功)
 
 
 
-#### sleep
 
-和wait本质一样 需要实现延时
 
 
 
@@ -302,7 +285,9 @@ finsih_list list 普通队列 执行完进程之后放入这个队列进行删�
 
 如果waiting不空则将所有线程排除 同时恢复owner(测试了上面的wait)
 
+加锁::heavy_check_mark:
 
+释放锁存在bug
 
 
 
@@ -328,13 +313,17 @@ notfiyAll
 
 重复调用waitinglist
 
+未实现
+
+
+
 
 
 
 
 #### video
 
-
+:heavy_check_mark:
 
 
 
@@ -346,9 +335,13 @@ notfiyAll
 
 ### 为其他group编写cartridge以及测试功能
 
+video测试
 
+:heavy_check_mark:
 
-:question:
+实际进程切换已经成功 
+
+但是由于gp 没法打印出来
 
 
 
