@@ -46,6 +46,14 @@ _start:
 .global thread_create,thread_yield,thread_exit
 .global Malloc, Free, Memcpy
 .global lock, unlock, initLock,destoryLock
+.global set_gp, get_gp
+
+set_gp:
+    mv gp,a0
+    ret
+get_gp:
+    mv a0,gp
+    ret
 
 
 

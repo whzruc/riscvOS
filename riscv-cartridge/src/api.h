@@ -22,6 +22,8 @@ typedef enum{
     FINISHED
 }ThreadStatus;
 
+void set_gp(uint32_t* gp);
+uint32_t* get_gp(void);
 
 
 // system calls thread

@@ -73,7 +73,8 @@ void video_test(){
 void thread_test(){
     ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
     ThreadID t2=thread_create(thread2,NULL,THREAD_MEMORY,High);
-    startFirstThread(sched);
+    // startFirstThread(sched);
+    uint32_t* global_gp=get_gp();
 }
 
 
@@ -83,9 +84,12 @@ int main() {
     int last_global = 42;
     int x_pos = 12;
     int countdown =1;
-    *MODE_REGISTER=0;
+
+    // *MODE_REGISTER=0;
+    VIDEO_MEMORY[0]="H";
     // memory_test();
     // video_test();
+    
     thread_test();
 
     // simple_medium_sprite(0,0,0);
