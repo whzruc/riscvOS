@@ -289,7 +289,7 @@ int main(){
     // DisableInterrupts();
     ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
     ThreadID t2=thread_create(thread2,NULL,THREAD_MEMORY,High);
-    startFirstThread(sched);
+    // startFirstThread(sched);
     
     // thread_yield(t1);
     // thread_yield(t2);
