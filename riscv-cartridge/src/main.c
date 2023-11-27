@@ -87,12 +87,43 @@ int main() {
     // gp?
     // memory_test();
     // thread_test();
-    // video_test();
+    video_test();
 
-
+    VIDEO_MEMORY[x_pos]='X';
     while (1) {
-        controller_status=getButtonStatus();
-
+        int c = a + b + global;
+        if(a == 11){
+            b++;
+        }
+        global = getTicks();
+        if(global != last_global){
+            controller_status = getButtonStatus();
+            if(controller_status){
+                VIDEO_MEMORY[x_pos] = ' ';
+                if(controller_status & 0x1){
+                    if(x_pos & 0x3F){
+                        x_pos--;
+                    }
+                }
+                if(controller_status & 0x2){
+                    if(x_pos >= 0x40){
+                        x_pos -= 0x40;
+                    }
+                }
+                if(controller_status & 0x4){
+                    if(x_pos < 0x8C0){
+                        x_pos += 0x40;
+                    }
+                }
+                if(controller_status & 0x8){
+                    if((x_pos & 0x3F) != 0x3F){
+                        x_pos++;
+                    }
+                }
+                VIDEO_MEMORY[x_pos] = 'X';
+            }
+            last_global = global;
+        }
     }
     return 0;
 }
