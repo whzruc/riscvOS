@@ -1,9 +1,5 @@
 #include "api.h"
 
-// systems calls memory
-void* Memcpy(uint8_t* dst,uint8_t* src,size_t num);
-void Free(void* ptr);
-void Malloc(uint8_t* dst,uint8_t* src,size_t num);
 
 // something reference https://github.com/fangqyi/riscv-console
 // mem map for background controls 0x100(256B)
@@ -21,6 +17,17 @@ volatile uint32_t *SMALL_SPRITE_CONTROL = (volatile uint32_t *)(0x500F6300);
 // void setVideoModel(int cmd){
 //     (*MODE_CONTROL_REG)|=(cmd&0x1);
 // }
+
+volatile int global = 42;
+volatile uint32_t controller_status = 0;
+volatile uint32_t *MODE_REGISTER = (volatile uint32_t *)(0x500F6780);
+
+
+volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
+volatile int pos1=0x40*1;
+volatile int pos2=0x40*2;
+volatile int count1=0;
+volatile int count2=0;
 
 void kmemcpy(uint8_t* dst, uint8_t* src, size_t num) {
     for (size_t i = 0; i < num; i++) {
@@ -175,7 +182,7 @@ void setSmallSprite(uint8_t spriteIndex, uint8_t* spriteData, uint8_t controlInd
     initSpritesPalettes(paletteIndex, paletteData, Small);
 }
 
-void simple_medium_sprite(int16_t x, int16_t y, int16_t z) {
+void simple_medium_sprite_green(int16_t x, int16_t y, int16_t z) {
     MODE_CONTROL_REG = 0x01;
 
     uint8_t sprite_data[0x400];
@@ -192,6 +199,29 @@ void simple_medium_sprite(int16_t x, int16_t y, int16_t z) {
     // Set specific colors in the palette
     palette_data[0] = GREEN;
     palette_data[1] = GREEN;
+
+    // Use your API functions to set the medium sprite palette, data, and control
+    initSpritesPalettes(2, palette_data, Medium);
+    setSprite(10, sprite_data, Medium);
+    setSpriteControl(5, 10, x, y, z, 2, Medium);
+}
+void simple_medium_sprite_red(int16_t x, int16_t y, int16_t z) {
+    MODE_CONTROL_REG = 0x01;
+
+    uint8_t sprite_data[0x400];
+    uint32_t palette_data[0x100];
+
+    // Fill palette data and sprite data
+    for (int i = 0; i < 0x20; i++) {
+        for (int j = 0; j < 0x20; j++) {
+            palette_data[(i * 0x20 + j) % 0x100] = 0;
+            sprite_data[i * 0x20 + j] = i < 0x10 ? 0 : 1;
+        }
+    }
+
+    // Set specific colors in the palette
+    palette_data[0] = RED;
+    palette_data[1] = RED;
 
     // Use your API functions to set the medium sprite palette, data, and control
     initSpritesPalettes(2, palette_data, Medium);

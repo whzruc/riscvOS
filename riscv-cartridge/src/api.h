@@ -42,7 +42,9 @@ TStatus destroyLock(MutexId mid);
 
 // memory
 void kmemcpy(uint8_t* dst, uint8_t* src, size_t num) ;
-
+void* Memcpy(uint8_t* dst,uint8_t* src,size_t num);
+void Free(void* ptr);
+void *Malloc(size_t size);
 // struct scheduler* sched;
 
 // void startFirstThread(scheduler* schedule);
@@ -176,12 +178,22 @@ void setSmallSprite(uint8_t spriteIndex, uint8_t* spriteData,
                     uint16_t posX, uint16_t posY, uint16_t zIndex,
                     uint8_t paletteIndex, uint32_t* paletteData);
 
-void simple_medium_sprite(int16_t x, int16_t y, int16_t z);
+// void simple_medium_sprite(int16_t x, int16_t y, int16_t z);
 
 
+void simple_medium_sprite_red(int16_t x, int16_t y, int16_t z) ;
+void simple_medium_sprite_green(int16_t x, int16_t y, int16_t z) ;
+
+extern volatile int global;
+extern volatile uint32_t controller_status;
+extern volatile uint32_t *MODE_REGISTER;
 
 
-
-
+extern volatile char *VIDEO_MEMORY;
+extern volatile int pos1;
+extern volatile int pos2;
+extern volatile int count1;
+extern volatile int count2;
+extern MutexId mid;
 
 #endif

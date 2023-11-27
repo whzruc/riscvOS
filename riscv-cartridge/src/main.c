@@ -4,12 +4,7 @@
 #include "api.h"
 
 
-volatile int global = 42;
-volatile uint32_t controller_status = 0;
-volatile uint32_t *MODE_REGISTER = (volatile uint32_t *)(0x500F6780);
 
-
-volatile char *VIDEO_MEMORY = (volatile char *)(0x50000000 + 0xF4800);
 
 void simple_medium_sprite(int16_t x, int16_t y, int16_t z);
 
@@ -18,11 +13,7 @@ void simple_medium_sprite(int16_t x, int16_t y, int16_t z);
 
 // }
 // volatile int global = 42;
-volatile int pos1=0x40*1;
-volatile int pos2=0x40*2;
-volatile int count1=0;
-volatile int count2=0;
-MutexId mid;
+
 
 void thread1(void *){
     while (1)
@@ -33,7 +24,7 @@ void thread1(void *){
         // switch
         // thread_yield()
         // lock(mid);
-
+        // simple_medium_sprite_green(0,0,0);
         VIDEO_MEMORY[pos1]='A';
         VIDEO_MEMORY[pos2]=' ';
         // unlock(mid);
@@ -51,6 +42,7 @@ void thread2(void *){
         // lock(mid);
         VIDEO_MEMORY[pos2]='B';
         VIDEO_MEMORY[pos1]=' ';
+        // simple_medium_sprite_red(0,0,0);
         // unlock(mid);
         // thread_yield();
     }
@@ -67,7 +59,9 @@ void memory_test(){
 }
 
 void video_test(){
-    simple_medium_sprite(0,0,0);
+    simple_medium_sprite_red(0,0,0);
+    // setSmallSprite()
+    
 }
 
 void thread_test(){
@@ -85,8 +79,9 @@ int main() {
     int x_pos = 12;
     int countdown =1;
 
-    // *MODE_REGISTER=0;
-    VIDEO_MEMORY[0]="H";
+    *MODE_REGISTER=0;
+    VIDEO_MEMORY[2]='H';
+    MutexId mid=initLock();
     // memory_test();
     // video_test();
     
