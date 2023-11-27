@@ -72,6 +72,8 @@ void thread_test(){
 }
 
 
+
+
 int main() {
     int a = 4;
     int b = 12;
@@ -85,9 +87,11 @@ int main() {
     // gp?
     // memory_test();
     // thread_test();
-    video_test();
+    // video_test();
+
 
     while (1) {
+        controller_status=getButtonStatus();
 
     }
     return 0;

@@ -26,6 +26,12 @@ void set_gp(uint32_t* gp);
 uint32_t* get_gp(void);
 
 
+// 
+uint32_t getTicks();
+uint32_t getButtonStatus();
+uint32_t getCmdInterrupted();
+uint32_t getVideoInterrupted();
+
 // system calls thread
 ThreadID thread_create(TContextEntry entry, void* param, uint32_t  memsize,ThreadPriority prio);
 TStatus thread_yield(ThreadID tid);
