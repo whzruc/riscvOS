@@ -82,15 +82,10 @@ int main() {
     *MODE_REGISTER=0;
     VIDEO_MEMORY[2]='H';
     MutexId mid=initLock();
+    // gp?
     // memory_test();
-    // video_test();
-    
-    thread_test();
-
-    // simple_medium_sprite(0,0,0);
-
-
-    
+    // thread_test();
+    video_test();
 
     while (1) {
 
