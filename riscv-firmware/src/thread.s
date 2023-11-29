@@ -2,6 +2,7 @@
 .global get_gp, ContextInitialize, ContextSwitch, call_th_ent, set_tp,startFirst
 
 ContextInitialize:
+    mv gp,a3
     addi a0,a0,-56
     sw   a1,52(a0)
     sw   gp,48(a0)

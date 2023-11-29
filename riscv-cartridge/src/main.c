@@ -65,8 +65,8 @@ void video_test(){
 }
 
 void thread_test(){
-    ThreadID t1=thread_create(thread1,NULL,THREAD_MEMORY,High);
-    ThreadID t2=thread_create(thread2,NULL,THREAD_MEMORY,High);
+    ThreadID t1=thread_create_gp(thread1,NULL,THREAD_MEMORY,High);
+    ThreadID t2=thread_create_gp(thread2,NULL,THREAD_MEMORY,High);
     // startFirstThread(sched);
     uint32_t* global_gp=get_gp();
 }
@@ -86,8 +86,8 @@ int main() {
     MutexId mid=initLock();
     // gp?
     // memory_test();
-    // thread_test();
-    video_test();
+    thread_test();
+    // video_test();
 
     VIDEO_MEMORY[x_pos]='X';
     while (1) {
