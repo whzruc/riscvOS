@@ -66,6 +66,11 @@ void set_timer(uint64_t msec);
 // millisecond
 void handle_time_interrupt();
 
+// void updateTicks();
+
+// init
+extern uint32_t init_flag;
+
 
 uint32_t* get_gp();
 TStatus OSinitialize(uint32_t *gp);

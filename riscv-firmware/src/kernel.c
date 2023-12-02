@@ -3,6 +3,8 @@
 #include "include/scheduler.h"
 #include "include/memory.h"
 #include "include/mutex.h"
+#include "include/condition.h"
+#include "include/sleepTimer.h"
 #include <stdlib.h>
 
 
@@ -11,6 +13,8 @@ volatile ThreadID global_tid =0;
 uint32_t *global_gp;
 struct TCB** threadArray;
 struct Mutex** mutexArray;
+struct ConditionVariable** condArray;
+struct SleepTimer* global_sleep_timer;
 struct scheduler* sched;
 ThreadID running_thread_id=0;
 
@@ -21,8 +25,11 @@ TStatus OSinitialize(uint32_t *gp){
     threadArray=malloc(sizeof(void*)*MAX_THREAD_NUM);
     // struct TCB* mainThread;
     sched=malloc(sizeof(struct scheduler*));
+    global_sleep_timer=malloc(sizeof(struct SleepTimer*));
     mutexArray=malloc(sizeof(struct Mutex*)*MAX_MUTEX_NUM);
+    condArray=malloc(sizeof(struct ConditionVariable*)*MAX_COND_NUM);
     initScheduler(sched);
+    initSleepTimer(global_sleep_timer);
     // init main
     // struct TCB* main_thread=malloc(sizeof(struct TCB));
     // main_thread->tid=global_tid;
@@ -34,6 +41,7 @@ TStatus OSinitialize(uint32_t *gp){
     // global_tid++;
     // current_thread_num++;
     global_gp=gp;
+    init_flag=1;
     // running_thread_id=sched->current_tid;
     if(global_gp==0){
         return STATUS_FAILURE;
@@ -156,6 +164,7 @@ void set_timer(uint64_t timestamp){
 void handle_time_interrupt(){
 
     set_timer(1000);
+    
 
     if (current_thread_num >= 2)
     {
@@ -179,6 +188,7 @@ void handle_time_interrupt(){
     
 
 }
+
 
 
 

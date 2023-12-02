@@ -1,17 +1,18 @@
 .section .text, "ax"
-# .global initialize
+.global initialize
 .global getTicks,getButtonStatus,getCmdInterrupted,getVideoInterrupted,threadInit
 .global thread_create,thread_yield,thread_exit
 .global Malloc, Free, Memcpy
 .global lock, unlock, initLock,destoryLock
+.global createCond,destoryCond,condWait,condNotifyOne,condNotifyAll
 
 
 
 
 
-# initialize:
-#     li a5,0
-#     ecall
+initialize:
+    li a5,0
+    ecall
 
 getTicks:
     li a5,1
@@ -76,4 +77,25 @@ destoryLock:
     li a4,15
     ecall
 
-    
+createCond:
+    li a4,16
+    ecall
+
+destoryCond:
+    li a4,17
+    ecall
+
+condWait:
+    li a4,18
+    ecall
+
+condSignal:
+    li a4,19
+    ecall
+
+condBroadcast:
+    li a4,20
+    ecall
+sleep:
+    li a4,21
+    ecall

@@ -23,11 +23,13 @@ void thread1(void *){
         /* code */
         // switch
         // thread_yield()
-        lock(mid);
+        // lock(mid);
+    
         // simple_medium_sprite_green(0,0,0);
         VIDEO_MEMORY[pos1]='A';
         VIDEO_MEMORY[pos2]=' ';
-        unlock(mid);
+        sleep(3);
+        // unlock(mid);
         // thread_yield();
     }
     // explict
@@ -39,11 +41,11 @@ void thread2(void *){
     {
         /* code */
         // thread_yield();
-        lock(mid);
+        // lock(mid);
         VIDEO_MEMORY[pos2]='B';
         VIDEO_MEMORY[pos1]=' ';
         // simple_medium_sprite_red(0,0,0);
-        unlock(mid);
+        // unlock(mid);
         // thread_yield();
     }
     thread_exit();
@@ -71,6 +73,8 @@ void thread_test(){
     uint32_t* global_gp=get_gp();
 }
 
+    
+
 
 
 
@@ -88,6 +92,7 @@ int main() {
     // memory_test();
     thread_test();
     // video_test();
+    // join_sleep_test();
 
     VIDEO_MEMORY[x_pos]='X';
     while (1) {
