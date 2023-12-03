@@ -10,7 +10,7 @@
 #include "mutex.h"
 
 
-typedef uint32_t CondID;
+
 #define MAX_COND_NUM 10
 #define INVALD_COND_ID -1
 typedef struct ConditionVariable{

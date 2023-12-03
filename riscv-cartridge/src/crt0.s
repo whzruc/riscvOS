@@ -34,9 +34,9 @@ _start:
     # jal     ra, initialize
     # nop
     jal     ra, main
-    lw      ra,0(sp)
-    addi	sp, sp, 4
-    ret
+    # lw      ra,0(sp)
+    # addi	sp, sp, 4
+    # ret
     .cfi_endproc
 
 
@@ -49,6 +49,7 @@ _start:
 .global set_gp, get_gp
 .global createCond,destoryCond,condWait,condNotifyOne,condNotifyAll
 .global sleep
+.global thread_join
 
 set_gp:
     mv gp,a0
@@ -143,6 +144,11 @@ condSignal:
 condBroadcast:
     li a5,20
     ecall
+
 sleep:
     li a5,21
+    ecall
+
+thread_join:
+    li a5,22
     ecall

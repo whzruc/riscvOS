@@ -8,10 +8,10 @@
 
 CondID global_cond_id=0;
 void wait(MutexId mid,scheduler* schedule,ConditionVariable* cond){
-    unlock(mid);
+    mutexRelease(schedule,mutexArray[mid]);
     enqueue(cond->waiting_list,schedule->current_tid);
     suspend(schedule);
-    lock(mid);
+    mutexLock(schedule,mutexArray[mid]);
 }
 
 void wait_(MutexId mid,scheduler* schedule, CondID cond_id){
@@ -41,7 +41,9 @@ void notifyAll_(scheduler* schedule,CondID cond_id){
 
 CondID condCreate(){
     ConditionVariable* cond=(ConditionVariable*)malloc(sizeof(ConditionVariable));
-    cond->waiting_list=createQueue(MAX_QUEUE_NUM);
+    cond->waiting_list=(Queue*)malloc(sizeof(Queue));
+    createQueue(cond->waiting_list,MAX_QUEUE_NUM);
+
     cond->cond_id=global_cond_id;
     condArray[global_cond_id]=cond;
     return global_cond_id++;

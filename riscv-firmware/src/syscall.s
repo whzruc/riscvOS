@@ -5,6 +5,7 @@
 .global Malloc, Free, Memcpy
 .global lock, unlock, initLock,destoryLock
 .global createCond,destoryCond,condWait,condNotifyOne,condNotifyAll
+.global thread_join
 
 
 
@@ -78,24 +79,28 @@ destoryLock:
     ecall
 
 createCond:
-    li a4,16
+    li a5,16
     ecall
 
 destoryCond:
-    li a4,17
+    li a5,17
     ecall
 
 condWait:
-    li a4,18
+    li a5,18
     ecall
 
 condSignal:
-    li a4,19
+    li a5,19
     ecall
 
 condBroadcast:
-    li a4,20
+    li a5,20
     ecall
 sleep:
-    li a4,21
+    li a5,21
+    ecall
+
+thread_join:
+    li a5,22
     ecall

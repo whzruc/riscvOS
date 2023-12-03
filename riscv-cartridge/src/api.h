@@ -58,6 +58,9 @@ TStatus condBroadcast(CondID cond_id);
 // sleep
 void sleep(size_t ticks);
 
+// join
+void thread_join(ThreadID tid);
+
 // memory
 void kmemcpy(uint8_t* dst, uint8_t* src, size_t num) ;
 void* Memcpy(uint8_t* dst,uint8_t* src,size_t num);

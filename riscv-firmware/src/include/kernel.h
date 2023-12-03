@@ -38,6 +38,7 @@ extern volatile uint32_t *INT_PENDING;
 
 // def
 typedef uint32_t TStatus;// total status
+typedef uint32_t CondID;
 
 // systemcall implemented in the syscall.s
 uint32_t getTicks();
@@ -46,6 +47,7 @@ uint32_t getCmdInterrupted();
 uint32_t getVideoInterrupted();
 
 void startFirst( uint32_t stk_ptr );
+// void threadJoin(Threa)
 
 
 // thread def

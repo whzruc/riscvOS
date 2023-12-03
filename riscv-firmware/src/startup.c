@@ -83,7 +83,7 @@ void  c_interrupt_handler(int mcause,int mepc){
                 global = 0;
             }
             if(init_flag){
-                updateGlobalTicks(sched,global_sleep_timer);
+                // updateGlobalTicks(sched,global_sleep_timer);
             }
             // update the systick
             // updateAllTick();
