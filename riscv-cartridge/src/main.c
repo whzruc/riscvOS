@@ -15,16 +15,23 @@ void simple_medium_sprite(int16_t x, int16_t y, int16_t z);
 // volatile int global = 42;
 volatile int flag=0;
 MutexId mid;
+ThreadID t1;
+ThreadID t2;
+ThreadID t3;
+ThreadID t4;
 
 void switch_display(int flag){
     if(flag){
+        // pos1++;
         VIDEO_MEMORY[pos1]='A';
         VIDEO_MEMORY[pos2]=' ';
     }else{
         VIDEO_MEMORY[pos1]=' ';
+        // pos2++;
         VIDEO_MEMORY[pos2]='B';
+        
     }
-    // sleep(3);
+    sleep(3);
     // flag=~flag;
 }
 
@@ -69,7 +76,7 @@ void thread3(void *){
     while(1){
         // lock(mid);
         switch_display(1);
-        sleep(5);
+        // sleep(5);
         // unlock(mid);
     }
 }
@@ -78,6 +85,7 @@ void thread4(void*){
     while(1){
         // lock(mid);
         switch_display(0);
+        // sleep(5);
         // unlock(mid);
     }
 }
@@ -98,8 +106,8 @@ void video_test(){
 }
 
 void thread_test(){
-    ThreadID t1=thread_create_gp(thread1,NULL,THREAD_MEMORY,High);
-    ThreadID t2=thread_create_gp(thread2,NULL,THREAD_MEMORY,High);
+    t1=thread_create_gp(thread1,NULL,THREAD_MEMORY,High);
+    t2=thread_create_gp(thread2,NULL,THREAD_MEMORY,High);
     // startFirstThread(sched);
     uint32_t* global_gp=get_gp();
 }
@@ -107,8 +115,8 @@ void thread_test(){
 
 
 void sleep_test(){
-    ThreadID t3=thread_create_gp(thread3,NULL,THREAD_MEMORY,High);
-    ThreadID t4=thread_create_gp(thread4,NULL,THREAD_MEMORY,High);
+    t3=thread_create_gp(thread3,NULL,THREAD_MEMORY,High);
+    t4=thread_create_gp(thread4,NULL,THREAD_MEMORY,High);
 }
     
 
@@ -127,13 +135,15 @@ int main() {
     mid=initLock();
     // gp?
     // memory_test();
-    // thread_test();
+    thread_test();
     // thread 包含了lock
     // video_test();
-    sleep_test();
-    // join_sleep_test();
+    // sleep_test();
 
     // 加上join之后会停在这里 不会显示x
+    thread_join(t1);
+    thread_join(t2);
+
     VIDEO_MEMORY[x_pos]='X';
     
     while (1) {
